@@ -74,14 +74,14 @@ export default function BookingFlow() {
       setSelectedFlight(location.state.selectedFlight);
       setSearchData(location.state.searchData || {});
       
-      // Guardar en storage para persistencia
+      
       bookingStorage.save({
         selectedFlight: location.state.selectedFlight,
         searchData: location.state.searchData,
         currentStep: 1,
       });
     } 
-    // ❌ No hay datos en ningún lado
+    
     else {
       console.error('❌ No hay reserva pendiente');
       setError('No hay reserva pendiente. Serás redirigido al inicio.');
