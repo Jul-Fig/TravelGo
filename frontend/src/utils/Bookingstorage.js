@@ -2,9 +2,9 @@
 // Utilidad para manejar el almacenamiento temporal de reservas CON DEBOUNCING
 
 const BOOKING_KEY = 'pendingBooking';
-const BOOKING_EXPIRY = 30 * 60 * 1000; // 30 minutos
+const BOOKING_EXPIRY = 30 * 60 * 1000; 
 
-let saveTimeout = null; // ⚡ Para debouncing
+let saveTimeout = null; 
 
 const bookingStorage = {
   /**
@@ -39,17 +39,17 @@ const bookingStorage = {
       
       return true;
     } catch (error) {
-      console.error('❌ Error guardando reserva:', error);
+      console.error(' Error guardando reserva:', error);
       return false;
     }
   },
 
   /**
-   * ✅ Guardar INMEDIATAMENTE (sin debouncing) - usar solo cuando es crítico
+   *  Guardar INMEDIATAMENTE (sin debouncing) - usar solo cuando es crítico
    */
   saveNow: (bookingData) => {
     try {
-      // Cancelar cualquier guardado pendiente
+
       if (saveTimeout) {
         clearTimeout(saveTimeout);
         saveTimeout = null;
@@ -95,7 +95,7 @@ const bookingStorage = {
 
   clear: () => {
     try {
-      // ⚡ Cancelar cualquier guardado pendiente
+      
       if (saveTimeout) {
         clearTimeout(saveTimeout);
         saveTimeout = null;
@@ -110,29 +110,16 @@ const bookingStorage = {
     }
   },
 
-  update: (updates) => {
-    try {
-      const current = bookingStorage.get();
-      if (!current) return false;
-      const merged = { ...current, ...updates, timestamp: Date.now() };
-      return bookingStorage.save(merged);
-    } catch (err) {
-      console.error('❌ Error en update:', err);
-      return false;
-    }
+  update(updates) {
+    const current = this.get();
+    if (!current) return false;
+    return this.save({ ...current, ...updates });
   },
 
-  updateStep: (newStep) => {
-    try {
-      const current = bookingStorage.get();
-      if (!current) return false;
-      current.currentStep = newStep;
-      current.timestamp = Date.now();
-      return bookingStorage.save(current);
-    } catch (err) {
-      console.error('❌ Error en updateStep:', err);
-      return false;
-    }
+   updateStep(newStep) {
+    const current = this.get();
+    if (!current) return false;
+    return this.save({ ...current, currentStep: newStep });
   },
 
   hasPendingBooking: () => {

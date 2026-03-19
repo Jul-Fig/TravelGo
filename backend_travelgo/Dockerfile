@@ -1,26 +1,40 @@
-# Dockerfile para Backend
+# ─────────────────────────────────────────────────────────────────────────────
+# Dockerfile — optimizado para Railway
+#
+# Railway detecta este archivo automáticamente y hace el build.
+# No necesitas subir el JAR; Railway compila desde el código fuente.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Etapa 1: compilar
 FROM maven:3.8.8-openjdk-17 AS builder
 WORKDIR /build
 
-# Cache de dependencias
+# Cachear dependencias primero (solo se re-descarga si cambia pom.xml)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Build
+# Compilar
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -B
 
-# Runtime image
+# ─────────────────────────────────────────────────────────────────────────────
+# Etapa 2: imagen de runtime (mucho más pequeña que la de build)
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
-
+# Copiar solo el JAR final
 COPY --from=builder /build/target/*.jar app.jar
-COPY wait-for.sh /wait-for.sh
-RUN chmod +x /wait-for.sh
 
+# Activar perfil de producción
 ENV SPRING_PROFILES_ACTIVE=production
 
-EXPOSE ${PORT}
-ENTRYPOINT ["/wait-for.sh", "mysql:3306", "--", "java", "-jar", "app.jar"]
+# Railway asigna el puerto mediante la variable $PORT
+# Spring lo lee desde server.port=${PORT:8080} en application-production.properties
+EXPOSE 8080
+
+# Opciones JVM para contenedores con poca RAM (Railway tier gratuito ~512MB)
+ENTRYPOINT ["java", \
+  "-XX:+UseContainerSupport", \
+  "-XX:MaxRAMPercentage=75.0", \
+  "-Djava.security.egd=file:/dev/./urandom", \
+  "-jar", "app.jar"]

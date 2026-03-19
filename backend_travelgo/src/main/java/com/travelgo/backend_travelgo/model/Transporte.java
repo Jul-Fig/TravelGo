@@ -38,9 +38,6 @@ public class Transporte {
     @Column(name = "destino", length = 100)
     private String destino;
 
-    // ========================================
-    // Campos de Amadeus (existentes)
-    // ========================================
     
     @Column(name = "amadeus_id", length = 50)
     private String amadeusId;
@@ -70,9 +67,9 @@ public class Transporte {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    // ========================================
+  
     // NUEVOS CAMPOS PARA TRANSFERS DE AMADEUS
-    // ========================================
+    
     
     @Column(name = "transfer_id", length = 50)
     private String transferId;
@@ -92,17 +89,17 @@ public class Transporte {
     @Column(name = "transfer_details", columnDefinition = "LONGTEXT")
     private String transferDetails;
 
-    // ========================================
+    
     // Relación opcional con viaje
-    // ========================================
+    
     
     @ManyToOne
     @JoinColumn(name = "viaje_id", nullable = true)
     private Viaje viaje;
 
-    // ========================================
+    
     // Lifecycle Callbacks
-    // ========================================
+    
     
     @PrePersist
     protected void onCreate() {

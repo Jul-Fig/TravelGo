@@ -45,7 +45,7 @@ public class AmadeusConnect {
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
         
-        logger.info("=== INICIALIZANDO AMADEUS ===");
+        logger.info("INICIALIZANDO AMADEUS ");
         logger.info("Client ID: {}", clientId != null ? clientId.substring(0, Math.min(8, clientId.length())) + "..." : "null");
         
         try {

@@ -8,27 +8,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 
-    // ✅ CORREGIDO: Usa el nombre del campo correcto
-    // El campo en el modelo se llama "usuario_id", no "usuario"
+    // ── Por usuario ──────────────────────────────────────────────────────────
+    // CORREGIDO: eliminado el duplicado que recibía Long (innecesario y confuso)
     List<Reserva> findByUsuarioId(Integer usuarioId);
-    
-    // Buscar por viaje
+
+    // ── Por viaje ────────────────────────────────────────────────────────────
     List<Reserva> findByViajeId(Integer viajeId);
-    
-    // Buscar por estado
+
+    // ── Por estado ───────────────────────────────────────────────────────────
     List<Reserva> findByEstado(Reserva.Estado estado);
-    
-    // Buscar por usuario y estado
+
+    // ── Combinados ───────────────────────────────────────────────────────────
     List<Reserva> findByUsuarioIdAndEstado(Integer usuarioId, Reserva.Estado estado);
-    
-    // Buscar por viaje y estado
     List<Reserva> findByViajeIdAndEstado(Integer viajeId, Reserva.Estado estado);
-    
-    // Contar reservas por usuario
+
+    // ── Conteos ──────────────────────────────────────────────────────────────
     Long countByUsuarioId(Integer usuarioId);
-    
-    // Contar reservas por estado
     Long countByEstado(Reserva.Estado estado);
-    
-    List<Reserva> findByUsuarioId(Long usuarioId);
 }
